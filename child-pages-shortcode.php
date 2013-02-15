@@ -70,6 +70,9 @@ public function shortcode($p, $template = null)
     if (!isset($p['width']) || !intval($p['width'])) {
         $p['width'] = "50%";
     }
+    if (!isset($p['exclude']) || !intval($p['exclude'])) {
+        $p['exclude'] = 0;
+    }
     return $this->display($p, $template);
 }
 
@@ -97,6 +100,8 @@ private function display($p, $block_template)
             esc_attr($p['size'])
         );
     }
+    
+    $p['exclude'] = explode("|", $p['exclude'] );
 
     $args = array(
         'post_status' => 'publish',
@@ -105,6 +110,7 @@ private function display($p, $block_template)
         'orderby' => 'menu_order',
         'order' => 'ASC',
         'nopaging' => true,
+        'post__not_in' => $p['exclude'],
     );
     $args = apply_filters('child-pages-shortcode-query', $args, $p);
 
